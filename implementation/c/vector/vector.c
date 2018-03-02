@@ -86,10 +86,11 @@ void vectorClear(Vector* vector, void (*fn)(void*)) {
 	vector -> size = 0;
 }
 
-// FIXME free memory for size reductions
-void vectorResize(Vector* vector, enum Resize action, uint64_t amount) {
+void vectorResize(Vector* vector, enum Resize action, uint64_t amount, void (*fn)(void*)) {
 	uint64_t currentCapacity = vector -> capacity;
 	uint64_t proposedSize;
+
+	bool reduction = false;
 
 	switch (action) {
 		case ADD:
@@ -102,15 +103,24 @@ void vectorResize(Vector* vector, enum Resize action, uint64_t amount) {
 
 		case SUBTRACT:
 			proposedSize = max(currentCapacity - amount, 0);
+			reduction = true;
 			break;
 
 		case DIVIDE:
 			proposedSize = currentCapacity / amount;
+			reduction = true;
 			break;
 
 		case SET:
 			proposedSize = amount;
+			reduction = proposedSize < currentCapacity;
 			break;
+	}
+
+	if (reduction) {
+		for (uint64_t i = vector -> size; i < vector -> capacity; i++) {
+			(*fn)(vector -> array[i]);
+		}
 	}
 
 	vector -> capacity = proposedSize;

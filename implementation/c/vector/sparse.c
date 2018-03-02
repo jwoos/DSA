@@ -35,6 +35,8 @@ void* vectorGet(const SparseVector* vector, uint64_t index) {
 void vectorSet(SparseVector* vector, uint64_t index, void* data) {
 	if (vector -> array[index] == NULL) {
 		vector -> size++;
+	} else if (data == NULL) {
+		vector -> size --;
 	}
 
 	vector -> array[index] = data;
@@ -49,10 +51,11 @@ void vectorClear(SparseVector* vector, void (*fn)(void*)) {
 	}
 }
 
-// FIXME free memory for size reductions
-void vectorResize(SparseVector* vector, enum Resize action, uint64_t amount) {
+void vectorResize(SparseVector* vector, enum Resize action, uint64_t amount, void (*fn)(void*)) {
 	uint64_t currentCapacity = vector -> capacity;
 	uint64_t proposedSize;
+
+	bool reduction = false;
 
 	switch (action) {
 		case ADD:
@@ -65,15 +68,24 @@ void vectorResize(SparseVector* vector, enum Resize action, uint64_t amount) {
 
 		case SUBTRACT:
 			proposedSize = max(currentCapacity - amount, 0);
+			reduction = true;
 			break;
 
 		case DIVIDE:
 			proposedSize = currentCapacity / amount;
+			reduction = true;
 			break;
 
 		case SET:
 			proposedSize = amount;
+			reduction = proposedSize < currentCapacity;
 			break;
+	}
+
+	if (reduction) {
+		for (uint64_t i = vector -> size; i < vector -> capacity; i++) {
+			(*fn)(vector -> array[i]);
+		}
 	}
 
 	vector -> capacity = proposedSize;
