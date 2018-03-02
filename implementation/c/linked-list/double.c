@@ -17,9 +17,21 @@ DoubleList* listConstruct(DoubleListNode* node) {
 	return list;
 }
 
-void listDeconstruct(DoubleList* list) {
+void listDeconstruct(DoubleList* list, void (*fn)(DoubleListNode*)) {
+	if (fn == NULL) {
+		fn = &free;
+	}
+
+	DoubleListNode* current = list -> head;
+	while (current != NULL) {
+		DoubleListNode* next = current -> next;
+
+		listNodeDeconstruct(current, fn);
+
+		current = next;
+	}
+
 	free(list);
-	list = NULL;
 }
 
 DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleListNode* next) {
@@ -40,10 +52,13 @@ DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleLi
 	return node;
 }
 
-void listNodeDeconstruct(DoubleListNode* node) {
-	free(node -> data);
+void listNodeDeconstruct(DoubleListNode* node, void (*fn)(DoubleListNode*)) {
+	if (fn == NULL) {
+		fn = &free;
+	}
+
+	fn(node -> data);
 	free(node);
-	node = NULL;
 }
 
 
@@ -134,7 +149,7 @@ void listDelete(DoubleList* list, int index) {
 	previous -> next = next;
 	next -> previous = previous;
 
-	listNodeDeconstruct(temp);
+	listNodeDeconstruct(temp, NULL);
 	list -> size--;
 }
 
@@ -143,7 +158,7 @@ void listClear(DoubleList* list) {
 
 	while (current != NULL) {
 		DoubleListNode* next = current -> next;
-		listNodeDeconstruct(current);
+		listNodeDeconstruct(current, NULL);
 
 		current = next;
 	}
@@ -151,4 +166,27 @@ void listClear(DoubleList* list) {
 	list -> head = NULL;
 	list -> tail = NULL;
 	list -> size = 0;
+}
+
+void listNodePrint(DoubleListNode* node, bool data) {
+	if (data) {
+		printf("%d", *(int*)(node -> data));
+	} else {
+		printf("%p", node);
+	}
+}
+
+void listPrint(DoubleList* list) {
+	DoubleListNode* current = list -> head;
+
+	while (current != NULL) {
+		listNodePrint(current, false);
+		printf("[");
+		listNodePrint(current, true);
+		printf("]");
+		printf(" -> ");
+		current = current -> next;
+	}
+
+	printf("\n");
 }

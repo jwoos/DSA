@@ -161,3 +161,26 @@ void listClear(SingleList* list) {
 	list -> tail = NULL;
 	list -> size = 0;
 }
+
+void listNodePrint(SingleListNode* node, bool data) {
+	if (data) {
+		printf("%d", *(int*)(node -> data));
+	} else {
+		printf("%p", node);
+	}
+}
+
+void listPrint(SingleList* list) {
+	SingleListNode* current = list -> head;
+
+	while (current != NULL) {
+		listNodePrint(current, false);
+		printf("[");
+		listNodePrint(current, true);
+		printf("]");
+		printf(" -> ");
+		current = current -> next;
+	}
+
+	printf("\n");
+}
