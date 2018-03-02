@@ -7,8 +7,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "common.h"
-#include "utils.h"
+#include "../common.h"
+#include "../utils.h"
 
 
 typedef struct Vector {
@@ -38,6 +38,10 @@ void vectorDelete(Vector*, uint64_t, void (*fn)(void*));
 void vectorClear(Vector*, void (*fn)(void*));
 
 void vectorResize(Vector*, enum Resize, uint64_t);
+
+char* vectorSprint(Vector*, void(*fn)(void*));
+
+void vectorPrint(Vector*, void (*fn)(void*));
 
 
 #endif

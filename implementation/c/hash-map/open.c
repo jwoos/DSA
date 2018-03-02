@@ -22,7 +22,7 @@ void hashMapNodeDeconstruct(HashMapNode* hmNode, void (*fn)(void*)) {
 	free(hmNode);
 }
 
-HashMap* hashMapConstruct(uint32_t capacity) {
+HashMap* hashMapConstruct(uint64_t capacity) {
 	HashMap* htPtr = malloc(sizeof (*htPtr));
 	if (!htPtr) {
 		return NULL;
@@ -49,14 +49,14 @@ void hashMapDeconstruct(HashMap* hm, void (*fn)(void*)) {
 void* hashMapGet(HashMap* hm, char* key) {
 	uint64_t hash = hashSBDM(key);
 
-	uint32_t index = hash % (hm -> capacity);
+	uint64_t index = hash % (hm -> capacity);
 	HashMapNode* node = vectorGet(hm -> vector, index);
 	Vector* data = current -> data;
 
 	void* val = NULL;
 
 	if (current -> size) {
-		for (uint32_t i = 0; i < current.size; i++) {
+		for (uint64_t i = 0; i < current.size; i++) {
 			if (node -> key == key) {
 				val = node -> data;
 			}
@@ -69,7 +69,7 @@ void* hashMapGet(HashMap* hm, char* key) {
 void hashMapSet(HashMap* hm, char* key, void* value) {
 	uint64_t hash = hashSBDM(key);
 
-	uint32_t index = hash % (hm -> capacity);
+	uint64_t index = hash % (hm -> capacity);
 	HashMapNode* current = vectorGet(hm -> vector, index);
 	Vector* data = current -> data;
 
@@ -83,7 +83,7 @@ void hashMapSet(HashMap* hm, char* key, void* value) {
 
 	if (current.size) {
 		bool set = false;
-		for (uint32_t i = 0; i < current.size; i++) {
+		for (uint64_t i = 0; i < current.size; i++) {
 			HashMapNode* node = vectorGet(current, i);
 			if (node -> key == key) {
 				node -> data = data;
@@ -105,7 +105,7 @@ void hashMapSet(HashMap* hm, char* key, void* value) {
 void hashMapRehash(HashMap* hm) {
 }
 
-void hashMapResize(HashMap* hm, enum Resize action, uint32_t factor) {
+void hashMapResize(HashMap* hm, enum Resize action, uint64_t factor) {
 	uint64_t proposedSize;
 	uint64_t currentSize = hm -> size;
 

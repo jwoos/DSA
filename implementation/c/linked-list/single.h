@@ -26,7 +26,7 @@ typedef struct SingleListNode {
 typedef struct SingleList {
 	SingleListNode* head;
 	SingleListNode* tail;
-	uint32_t size;
+	uint64_t size;
 } SingleList;
 
 
@@ -44,13 +44,13 @@ void listPush(SingleList*, void*);
 
 void* listPop(SingleList*);
 
-void* listGet(SingleList*, uint32_t);
+void* listGet(SingleList*, uint64_t);
 
-void listSet(SingleList*, uint32_t, void*, void (fn*)(void*));
+void listSet(SingleList*, uint64_t, void*, void (fn*)(void*));
 
-void listInsert(SingleList*, uint32_t, void*);
+void listInsert(SingleList*, uint64_t, void*);
 
-void listDelete(SingleList*, uint32_t, void (fn*)(void*));
+void listDelete(SingleList*, uint64_t, void (fn*)(void*));
 
 void listClear(SingleList*, void (fn*)(void*));
 

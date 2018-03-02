@@ -38,11 +38,11 @@ uint64_t hashSBDM(char* str) {
  * compile and run any of them on any platform, but your performance with the
  * non-native version will be less than optimal.
  */
-static uint32_t rotl32 ( uint32_t x, int8_t r ) {
+static uint32_t rotl32 (uint32_t x, int8_t r) {
 	return (x << r) | (x >> (32 - r));
 }
 
-static uint64_t rotl64 ( uint64_t x, int8_t r ) {
+static uint64_t rotl64 (uint64_t x, int8_t r) {
 	return (x << r) | (x >> (64 - r));
 }
 

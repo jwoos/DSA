@@ -81,7 +81,7 @@ void* listPop(DoubleList* list) {
 	return tail -> data;
 }
 
-void* listGet(DoubleList* list, uint32_t index) {
+void* listGet(DoubleList* list, uint64_t index) {
 	if (index < 0 || index >= list -> size) {
 		printf("Element not found at index %d - outside of range\n", index);
 		return NULL;
@@ -91,7 +91,7 @@ void* listGet(DoubleList* list, uint32_t index) {
 	if (index <= (list -> size) / 2) {
 		node = list -> head;
 
-		uint32_t i = 0;
+		uint64_t i = 0;
 		while (i < index) {
 			if (node != NULL) {
 				i++;
@@ -104,7 +104,7 @@ void* listGet(DoubleList* list, uint32_t index) {
 	} else {
 		node = list -> tail;
 
-		uint32_t i = list -> size - 1;
+		uint64_t i = list -> size - 1;
 		while (i > index) {
 			if (node != NULL) {
 				i--;
@@ -119,7 +119,7 @@ void* listGet(DoubleList* list, uint32_t index) {
 	return node -> data;
 }
 
-void listSet(DoubleList* list, uint32_t index, void* newData, void (*fn)(void*)) {
+void listSet(DoubleList* list, uint64_t index, void* newData, void (*fn)(void*)) {
 	DoubleListNode* current = listGet(list, index);
 
 	if (current == NULL) {
@@ -134,14 +134,14 @@ void listSet(DoubleList* list, uint32_t index, void* newData, void (*fn)(void*))
 	current -> data = newData;
 }
 
-void listInsert(DoubleList* list, uint32_t index, void* newData) {
+void listInsert(DoubleList* list, uint64_t index, void* newData) {
 	DoubleListNode* previous = listGet(list, index - 1);
 	listNodeConstruct(newData, previous, previous -> next);
 
 	list -> size++;
 }
 
-void listDelete(DoubleList* list, uint32_t index, void (*fn)(void*)) {
+void listDelete(DoubleList* list, uint64_t index, void (*fn)(void*)) {
 	DoubleListNode* temp = listGet(list, index);
 	DoubleListNode* previous = temp -> previous;
 	DoubleListNode* next = temp -> next;
@@ -170,7 +170,7 @@ void listClear(DoubleList* list, void (*fn)(void*)) {
 
 void listNodePrint(DoubleListNode* node, bool data) {
 	if (data) {
-		printf("%d", *(uint32_t*)(node -> data));
+		printf("%d", *(uint64_t*)(node -> data));
 	} else {
 		printf("%p", node);
 	}

@@ -12,8 +12,8 @@
 
 
 typedef struct HashMap {
-	unsigned int currentSize;
-	unsigned int maxSize;
+	uint64_t currentSize;
+	uint64_t maxSize;
 } HashMap;
 
 
@@ -23,7 +23,7 @@ typedef struct HashMapNode {
 } HashMapNode;
 
 
-HashMap* hashMapConstruct(unsigned int);
+HashMap* hashMapConstruct(uint64_t);
 
 void hashMapDeconstruct(HashMap*);
 

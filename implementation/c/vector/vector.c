@@ -117,3 +117,10 @@ void vectorResize(Vector* vector, enum Resize action, uint64_t amount) {
 	vector -> size = min(vector -> capacity, vector -> size);
 	vector -> array = realloc(vector -> array, sizeof (*(vector -> array)) * (vector -> capacity));
 }
+
+char* vectorSprint(Vector* vector, char* (*fn)(void*)) {
+
+}
+
+void vectorPrint(Vector* vector, void (*fn)(void*)) {
+}

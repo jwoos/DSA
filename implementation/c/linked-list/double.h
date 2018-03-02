@@ -11,7 +11,7 @@
 typedef struct DoubleList {
 	struct DoubleListNode* head;
 	struct DoubleListNode* tail;
-	uint32_t size;
+	uint64_t size;
 } DoubleList;
 
 
@@ -34,13 +34,15 @@ void listPush(DoubleList*, void*);
 
 DoubleListNode* listPop(DoubleList*);
 
-DoubleListNode* listGet(DoubleList*, int);
+DoubleListNode* listGet(DoubleList*, uint64_t);
 
-void listSet(DoubleList*, int, void*);
+void listSet(DoubleList*, uint64_t, void*, void (*fn)(void*));
 
-void listDelete(DoubleList*, int);
+void listDelete(DoubleList*, uint64_t, void (*fn)(void*));
 
-void listClear(DoubleList*);
+void listClear(DoubleList*, void (*fn)(void*));
+
+void listNodePrint(DoubleListNode*, bool);
 
 void listPrint(DoubleList*);
 

@@ -9,7 +9,7 @@
 
 #include "../common.h"
 #include "../linked-list/double.h"
-#include "../vector.h"
+#include "../vector/vector.h"
 
 
 typedef struct HashMapNode {
@@ -20,8 +20,8 @@ typedef struct HashMapNode {
 
 
 typedef struct HashMap {
-	uint32_t size;
-	uint32_t capacity;
+	uint64_t size;
+	uint64_t capacity;
 	// vector of linked list
 	Vector* vector;
 } HashMap;
@@ -31,7 +31,7 @@ HashMapNode* hashMapNodeConstruct(char*, void*);
 
 void hashMapNodeDeconstruct(HashMapNode*, void (*fn)(void*));
 
-HashMap* hashMapConstruct(uint32_t);
+HashMap* hashMapConstruct(uint64_t);
 
 void hashMapDeconstruct(HashMap*, void (*fn)(void*));
 
@@ -41,7 +41,7 @@ void hashMapSet(HashMap*, char*, void*);
 
 void hashMapRehash(HashMap*);
 
-void hashMapResize(HashMap*, enum Resize, uint32_t);
+void hashMapResize(HashMap*, enum Resize, uint64_t);
 
 
 #endif

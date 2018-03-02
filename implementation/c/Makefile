@@ -14,7 +14,7 @@ ALGORITHMS =
 
 UNUSED_STRUCTURES = graph.o tree/binary-search.o
 STRUCTURES = linked-list/double.o linked-list/single.o \
-			 vector.o \
+			 vector/vector.o \
 			 hash-map/closed.o hash-map/open.o
 
 default: clean datastructures

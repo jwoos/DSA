@@ -84,7 +84,7 @@ void* listPop(SingleList* list) {
 	return tail -> data;
 }
 
-void* listGet(SingleList* list, uint32_t index) {
+void* listGet(SingleList* list, uint64_t index) {
 	if (index >= list -> size) {
 		printf("Element not found at index %d - outside of range\n", index);
 		return NULL;
@@ -92,7 +92,7 @@ void* listGet(SingleList* list, uint32_t index) {
 
 	SingleListNode* node = list -> head;
 
-	uint32_t i = 0;
+	uint64_t i = 0;
 	while (i < index) {
 		if (node != NULL) {
 			i++;
@@ -106,7 +106,7 @@ void* listGet(SingleList* list, uint32_t index) {
 	return node -> data;
 }
 
-void listSet(SingleList* list, uint32_t index, void* newData, void (*fn)(void*)) {
+void listSet(SingleList* list, uint64_t index, void* newData, void (*fn)(void*)) {
 	SingleListNode* current = listGetElement(list, index);
 
 	if (current == NULL) {
@@ -121,7 +121,7 @@ void listSet(SingleList* list, uint32_t index, void* newData, void (*fn)(void*))
 	current -> data = newData;
 }
 
-void listInsert(SingleList* list, uint32_t index, void* newData) {
+void listInsert(SingleList* list, uint64_t index, void* newData) {
 	SingleListNode* previous = listGetElement(list, index - 1);
 	SingleListNode* next = previous -> next;
 
@@ -131,7 +131,7 @@ void listInsert(SingleList* list, uint32_t index, void* newData) {
 	list -> size++;
 }
 
-void listDelete(SingleList* list, uint32_t index, void (*fn)(void*)) {
+void listDelete(SingleList* list, uint64_t index, void (*fn)(void*)) {
 	SingleListNode* previous = listGetElement(list, index - 1);
 	SingleListNode* temp = previous -> next;
 	SingleListNode* next = temp -> next;
@@ -159,7 +159,7 @@ void listClear(SingleList* list, void (*fn)(void*)) {
 
 void listNodePrint(SingleListNode* node, bool data) {
 	if (data) {
-		printf("%d", *(int*)(node -> data));
+		printf("%d", *(uint64_t*)(node -> data));
 	} else {
 		printf("%p", node);
 	}

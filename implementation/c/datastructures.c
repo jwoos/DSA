@@ -3,7 +3,7 @@
 
 #include "tree/binary-search.h"
 #include "linked-list/single.h"
-#include "vector.h"
+#include "vector/vector.h"
 
 
 void listCheck() {
