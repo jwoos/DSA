@@ -1,90 +1,125 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "vector.h"
 
-static void increaseCapacity(Vector* vector) {
-	vector -> capacity *= 2;
 
-	vector -> arr = realloc(vector -> arr, sizeof(int) * (vector -> capacity));
-}
-
-Vector* vectorConstruct() {
+Vector* vectorConstruct(uint64_t cap) {
 	Vector* vector = malloc(sizeof(Vector));
 
+	if (!cap) {
+		cap = SNAKE_DATA_DEFAULT_SIZE;
+	}
+
 	vector -> size = 0;
-	vector -> capacity = 1;
-	vector -> arr = malloc(sizeof(int));
+	vector -> capacity = cap;
+	vector -> array = calloc(cap, sizeof(void*));
 
 	return vector;
 }
 
-void vectorDeconstruct(Vector* vector) {
-	free(vector -> arr);
+void vectorDeconstruct(Vector* vector, void (*fn)(void*)) {
+	if (fn == NULL) {
+		fn = &free;
+	}
+
+	for (uint64_t i = 0; i < vector -> capacity; i++) {
+		if (vector -> array[i] != NULL) {
+			(*fn)(vector -> array[i]);
+			vector -> array[i] = NULL;
+		}
+	}
+
+	free(vector -> array);
 	free(vector);
-
-	vector = NULL;
 }
 
-void vectorPrint(const Vector* vector) {
-	for (int i = 0; i < vector -> size; i++) {
-		printf("%d -> ", vector -> arr[i]);
-	}
-
-	printf("\n");
-}
-
-void vectorPush(Vector* vector, int data) {
+void vectorPush(Vector* vector, void* data) {
 	if (vector -> size == vector -> capacity) {
-		increaseCapacity(vector);
+		vectorResize(vector, MULTIPLY, SNAKE_DATA_INCREASE_FACTOR);
 	}
 
-	vector -> arr[vector -> size] = data;
+	vector -> array[vector -> size] = data;
 	vector -> size++;
 }
 
-int vectorPop(Vector* vector) {
+void* vectorPop(Vector* vector) {
 	vector -> size--;
 
-	int data = vector -> arr[vector -> size];
-	vector -> arr[vector -> size] = 0;
+	void* data = vector -> array[vector -> size - 1];
+	vector -> array[vector -> size] = NULL;
 
 	return data;
 }
 
-int vectorGet(const Vector* vector, int index) {
-	return vector -> arr[index];
+void* vectorGet(const Vector* vector, uint64_t index) {
+	return vector -> array[index];
 }
 
-void vectorSet(Vector* vector, int index, int data) {
-	vector -> arr[index] = data;
+void vectorSet(Vector* vector, uint64_t index, void* data) {
+	vector -> array[index] = data;
 }
 
-void vectorInsert(Vector* vector, int index, int data) {
+void vectorInsert(Vector* vector, uint64_t index, void* data) {
 	if (vector -> size == vector -> capacity) {
-		increaseCapacity(vector);
+		vectorResize(vector, MULTIPLY, SNAKE_DATA_INCREASE_FACTOR);
 	}
 
 	vector -> size++;
 
-	for (int i = vector -> size - 1; i > index; i--) {
-		vector -> arr[i] = vectorGet(vector, i - 1);
-	}
+	memmove(vector -> array + (index + 1), vector -> array + index, sizeof (void*) * (vector -> size - (index + 1)));
 
 	vectorSet(vector, index, data);
 }
 
-void vectorDelete(Vector* vector, int index) {
-	for (int i = index; i < vector -> size - 1; i++) {
-		vector -> arr[i] = vectorGet(vector, i + 1);
+void vectorDelete(Vector* vector, uint64_t index, void (*fn)(void*)) {
+	if (fn == NULL) {
+		fn = &free;
 	}
+
+	(*fn)(vector -> array[index]);
+	memmove(vector -> array + index, vector -> array + (index + 1), sizeof (void*) * (vector -> size - (index + 1)));
 
 	vector -> size--;
 }
 
-void vectorClear(Vector* vector) {
-	free(vector -> arr);
-	vector -> arr = malloc(sizeof(int));
+void vectorClear(Vector* vector, void (*fn)(void*)) {
+	if (fn == NULL) {
+		fn = &free;
+	}
+
+	for (uint64_t i = 0; i < vector -> size - 1; i++) {
+		(*fn)(vector -> array[i]);
+		vector -> array[i] = NULL;
+	}
 	vector -> size = 0;
-	vector -> capacity = 1;
+}
+
+// FIXME free memory for size reductions
+void vectorResize(Vector* vector, enum Resize action, uint64_t amount) {
+	uint64_t currentCapacity = vector -> capacity;
+	uint64_t proposedSize;
+
+	switch (action) {
+		case ADD:
+			proposedSize = currentCapacity + amount;
+			break;
+
+		case MULTIPLY:
+			proposedSize = currentCapacity * amount;
+			break;
+
+		case SUBTRACT:
+			proposedSize = max(currentCapacity - amount, 0);
+			break;
+
+		case DIVIDE:
+			proposedSize = currentCapacity / amount;
+			break;
+
+		case SET:
+			proposedSize = amount;
+			break;
+	}
+
+	vector -> capacity = proposedSize;
+	vector -> size = min(vector -> capacity, vector -> size);
+	vector -> array = realloc(vector -> array, sizeof (*(vector -> array)) * (vector -> capacity));
 }

@@ -1,32 +1,43 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef DSA_VECTOR_H
+#define DSA_VECTOR_H
+
+
+#include <stdint.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include "common.h"
+#include "utils.h"
 
 
 typedef struct Vector {
-	int size;
-	int capacity;
-	int* arr;
+	uint64_t size;
+	uint64_t capacity;
+
+	void** array;
 } Vector;
 
-Vector* vectorConstruct();
 
-void vectorDeconstruct(Vector*);
+Vector* vectorConstruct(uint64_t);
 
-void vectorPrint(const Vector*);
+void vectorDeconstruct(Vector* vector, void (*fn)(void*));
 
-void vectorPush(Vector*, int);
+void vectorPush(Vector*, void*);
 
-int vectorPop(Vector*);
+void* vectorPop(Vector*);
 
-int vectorGet(const Vector*, int);
+void* vectorGet(const Vector*, uint64_t);
 
-void vectorSet(Vector*, int, int);
+void vectorSet(Vector*, uint64_t, void*);
 
-void vectorInsert(Vector*, int, int);
+void vectorInsert(Vector*, uint64_t, void*);
 
-void vectorDelete(Vector*, int);
+void vectorDelete(Vector*, uint64_t, void (*fn)(void*));
 
-void vectorClear(Vector*);
+void vectorClear(Vector*, void (*fn)(void*));
+
+void vectorResize(Vector*, enum Resize, uint64_t);
 
 
 #endif
