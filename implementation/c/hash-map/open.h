@@ -8,8 +8,8 @@
 #include "../vendor/hash.h"
 
 #include "../common.h"
-#include "../linked-list/double.h"
-#include "../vector/vector.h"
+#include "../linked-list/single.h"
+#include "../vector/sparse.h"
 
 
 typedef struct HashMapNode {
@@ -23,7 +23,7 @@ typedef struct HashMap {
 	uint64_t size;
 	uint64_t capacity;
 	// vector of linked list
-	Vector* vector;
+	SparseVector* vector;
 } HashMap;
 
 
@@ -37,7 +37,11 @@ void hashMapDeconstruct(HashMap*, void (*fn)(void*));
 
 void* hashMapGet(HashMap*, char*);
 
-void hashMapSet(HashMap*, char*, void*);
+void hashMapSet(HashMap*, char*, void*, void (*fn)(void*));
+
+void hashMapDelete(HashMap*, char*, void (*fn)(void*));
+
+bool hashMapExists(HashMap*, char*);
 
 void hashMapRehash(HashMap*);
 

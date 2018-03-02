@@ -8,6 +8,7 @@
 
 #define DSA_DATA_DEFAULT_SIZE 16
 #define DSA_DATA_INCREASE_FACTOR 2
+#define DSA_DATA_RESIZE_THRESHOLD 0.65
 
 /* At least N bits
  * int_leastN_t
