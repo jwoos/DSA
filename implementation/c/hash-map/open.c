@@ -14,11 +14,9 @@ HashMapNode* hashMapNodeConstruct(char* key, void* value) {
 }
 
 void hashMapNodeDeconstruct(HashMapNode* hmNode, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
+	if (fn != NULL) {
+		fn(hmNode -> value);
 	}
-
-	fn(hmNode -> value);
 	free(hmNode -> key);
 
 	free(hmNode);
@@ -44,10 +42,6 @@ HashMap* hashMapConstruct(uint32_t capacity) {
 }
 
 void hashMapDeconstruct(HashMap* hm, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
 	vectorDeconstruct(hm -> vector, fn);
 	free(hm);
 }

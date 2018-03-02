@@ -16,13 +16,11 @@ Vector* vectorConstruct(uint64_t cap) {
 }
 
 void vectorDeconstruct(Vector* vector, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
 	for (uint64_t i = 0; i < vector -> capacity; i++) {
 		if (vector -> array[i] != NULL) {
-			(*fn)(vector -> array[i]);
+			if (fn != NULL) {
+				(*fn)(vector -> array[i]);
+			}
 			vector -> array[i] = NULL;
 		}
 	}
@@ -70,23 +68,19 @@ void vectorInsert(Vector* vector, uint64_t index, void* data) {
 }
 
 void vectorDelete(Vector* vector, uint64_t index, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
+	if (fn != NULL) {
+		(*fn)(vector -> array[index]);
 	}
-
-	(*fn)(vector -> array[index]);
 	memmove(vector -> array + index, vector -> array + (index + 1), sizeof (void*) * (vector -> size - (index + 1)));
 
 	vector -> size--;
 }
 
 void vectorClear(Vector* vector, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
 	for (uint64_t i = 0; i < vector -> size - 1; i++) {
-		(*fn)(vector -> array[i]);
+		if (fn != NULL) {
+			(*fn)(vector -> array[i]);
+		}
 		vector -> array[i] = NULL;
 	}
 	vector -> size = 0;

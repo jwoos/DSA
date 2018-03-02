@@ -17,11 +17,10 @@ SingleListNode* listNodeConstruct(void* data, SingleListNode* next) {
 }
 
 void listNodeDeconstruct(SingleListNode* node, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
+	if (fn != NULL) {
+		fn(node -> data);
 	}
 
-	fn(node -> data);
 	free(node);
 }
 
@@ -45,10 +44,6 @@ SingleList* listConstruct(SingleListNode* node) {
 }
 
 void listDeconstruct(SingleList* list, void (*fn)(void)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
 	SingleListNode* current = list -> head;
 	while (current != NULL) {
 		SingleListNode* next = current -> next;
@@ -84,7 +79,7 @@ void* listPop(SingleList* list) {
 	list -> size--;
 
 	void* data = tail -> data;
-	free(tail);
+	listNodeDeconstruct(tail, NULL);
 
 	return tail -> data;
 }
@@ -137,14 +132,11 @@ void listInsert(SingleList* list, uint32_t index, void* newData) {
 }
 
 void listDelete(SingleList* list, uint32_t index, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
 	SingleListNode* previous = listGetElement(list, index - 1);
-	SingleListNode* current = prevIndex -> next;
+	SingleListNode* temp = previous -> next;
+	SingleListNode* next = temp -> next;
 
-	prevIndex -> next = prevIndex -> next -> next;
+	previous -> next = next;
 
 	listNodeDeconstruct(temp, fn);
 	list -> size--;
@@ -155,7 +147,7 @@ void listClear(SingleList* list, void (*fn)(void*)) {
 
 	while (current != NULL) {
 		SingleListNode* next = current -> next;
-		listNodeDeconstruct(current, NULL);
+		listNodeDeconstruct(current, fn);
 
 		current = next;
 	}

@@ -1,39 +1,6 @@
 #include "double.h"
 
 
-DoubleList* listConstruct(DoubleListNode* node) {
-	DoubleList* list = malloc(sizeof *list);
-
-	if (!node) {
-		list -> head = NULL;
-		list -> tail = NULL;
-		list -> size = 0;
-	} else {
-		list -> head = node;
-		list -> tail = node;
-		list -> size = 1;
-	}
-
-	return list;
-}
-
-void listDeconstruct(DoubleList* list, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
-	}
-
-	DoubleListNode* current = list -> head;
-	while (current != NULL) {
-		DoubleListNode* next = current -> next;
-
-		listNodeDeconstruct(current, fn);
-
-		current = next;
-	}
-
-	free(list);
-}
-
 DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleListNode* next) {
 	DoubleListNode* node = malloc(sizeof *node);
 
@@ -53,14 +20,41 @@ DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleLi
 }
 
 void listNodeDeconstruct(DoubleListNode* node, void (*fn)(void*)) {
-	if (fn == NULL) {
-		fn = &free;
+	if (fn != NULL) {
+		fn(node -> data);
 	}
 
-	fn(node -> data);
 	free(node);
 }
 
+DoubleList* listConstruct(DoubleListNode* node) {
+	DoubleList* list = malloc(sizeof *list);
+
+	if (!node) {
+		list -> head = NULL;
+		list -> tail = NULL;
+		list -> size = 0;
+	} else {
+		list -> head = node;
+		list -> tail = node;
+		list -> size = 1;
+	}
+
+	return list;
+}
+
+void listDeconstruct(DoubleList* list, void (*fn)(void*)) {
+	DoubleListNode* current = list -> head;
+	while (current != NULL) {
+		DoubleListNode* next = current -> next;
+
+		listNodeDeconstruct(current, fn);
+
+		current = next;
+	}
+
+	free(list);
+}
 
 void listPush(DoubleList* list, void* data) {
 	DoubleListNode* tail = list -> tail;
@@ -71,7 +65,7 @@ void listPush(DoubleList* list, void* data) {
 	list -> size++;
 }
 
-DoubleListNode* listPop(DoubleList* list) {
+void* listPop(DoubleList* list) {
 	DoubleListNode* tail = list -> tail;
 	DoubleListNode* current = tail -> previous;
 
@@ -81,10 +75,13 @@ DoubleListNode* listPop(DoubleList* list) {
 	list -> tail = current;
 	list -> size--;
 
-	return tail;
+	void* data = tail -> data;
+	listNodeDeconstruct(tail, NULL);
+
+	return tail -> data;
 }
 
-DoubleListNode* listGet(DoubleList* list, int index) {
+void* listGet(DoubleList* list, uint32_t index) {
 	if (index < 0 || index >= list -> size) {
 		printf("Element not found at index %d - outside of range\n", index);
 		return NULL;
@@ -94,7 +91,7 @@ DoubleListNode* listGet(DoubleList* list, int index) {
 	if (index <= (list -> size) / 2) {
 		node = list -> head;
 
-		int i = 0;
+		uint32_t i = 0;
 		while (i < index) {
 			if (node != NULL) {
 				i++;
@@ -107,7 +104,7 @@ DoubleListNode* listGet(DoubleList* list, int index) {
 	} else {
 		node = list -> tail;
 
-		int i = list -> size - 1;
+		uint32_t i = list -> size - 1;
 		while (i > index) {
 			if (node != NULL) {
 				i--;
@@ -119,46 +116,49 @@ DoubleListNode* listGet(DoubleList* list, int index) {
 		}
 	}
 
-	return node;
+	return node -> data;
 }
 
-void listSet(DoubleList* list, int index, void* newData) {
-	DoubleListNode* atIndex = listGet(list, index);
+void listSet(DoubleList* list, uint32_t index, void* newData, void (*fn)(void*)) {
+	DoubleListNode* current = listGet(list, index);
 
-	if (atIndex == NULL) {
+	if (current == NULL) {
 		printf("Not setting - aborting...\n");
 		return;
 	}
 
-	free(atIndex -> data);
-	atIndex -> data = newData;
+	if (fn != NULL) {
+		fn(current -> data);
+	}
+
+	current -> data = newData;
 }
 
-void listInsert(DoubleList* list, int index, void* newData) {
+void listInsert(DoubleList* list, uint32_t index, void* newData) {
 	DoubleListNode* previous = listGet(list, index - 1);
 	listNodeConstruct(newData, previous, previous -> next);
 
 	list -> size++;
 }
 
-void listDelete(DoubleList* list, int index) {
-	DoubleListNode* previous = listGet(list, index - 1);
-	DoubleListNode* temp = previous -> next;
+void listDelete(DoubleList* list, uint32_t index, void (*fn)(void*)) {
+	DoubleListNode* temp = listGet(list, index);
+	DoubleListNode* previous = temp -> previous;
 	DoubleListNode* next = temp -> next;
 
 	previous -> next = next;
 	next -> previous = previous;
 
-	listNodeDeconstruct(temp, NULL);
+	listNodeDeconstruct(temp, fn);
 	list -> size--;
 }
 
-void listClear(DoubleList* list) {
+void listClear(DoubleList* list, void (*fn)(void*)) {
 	DoubleListNode* current = list -> head;
 
 	while (current != NULL) {
 		DoubleListNode* next = current -> next;
-		listNodeDeconstruct(current, NULL);
+		listNodeDeconstruct(current, fn);
 
 		current = next;
 	}
@@ -170,7 +170,7 @@ void listClear(DoubleList* list) {
 
 void listNodePrint(DoubleListNode* node, bool data) {
 	if (data) {
-		printf("%d", *(int*)(node -> data));
+		printf("%d", *(uint32_t*)(node -> data));
 	} else {
 		printf("%p", node);
 	}
