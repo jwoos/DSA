@@ -17,7 +17,7 @@
 
 // this should still be available
 typedef struct SingleListNode {
-	int data;
+	void* data;
 	struct SingleListNode* next;
 } SingleListNode;
 
@@ -26,32 +26,37 @@ typedef struct SingleListNode {
 typedef struct SingleList {
 	SingleListNode* head;
 	SingleListNode* tail;
-	int size;
+	uint32_t size;
 } SingleList;
 
 
+SingleListNode* listNodeConstruct(void*, SingleListNode*);
+
+void listNodeDeconstruct(SingleListNode*, void (*fn)(void*));
+
 SingleList* listConstruct(SingleListNode*);
 
-void listDeconstruct(SingleList*);
-
-SingleListNode* listNodeInitialize(int, SingleListNode*);
-
-void listNodeDeconstruct(SingleListNode*);
+void listDeconstruct(SingleList*, void (*fn)(void*));
 
 void listPrint(SingleList*);
 
-void listPush(SingleList*, int);
+void listPush(SingleList*, void*);
 
-SingleListNode* listPop(SingleList*);
+void* listPop(SingleList*);
 
-SingleListNode* listGetElement(SingleList*, int);
+void* listGet(SingleList*, uint32_t);
 
-void listSetElement(SingleList*, int, int);
+void listSet(SingleList*, uint32_t, void*, void (fn*)(void*));
 
-void listInsert(SingleList*, int, int);
+void listInsert(SingleList*, uint32_t, void*);
 
-void listDelete(SingleList*, int);
+void listDelete(SingleList*, uint32_t, void (fn*)(void*));
 
-void listClear(SingleList*);
+void listClear(SingleList*, void (fn*)(void*));
+
+void listNodePrint(SingleListNode*, bool);
+
+void listPrint(SingleList*);
+
 
 #endif
