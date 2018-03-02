@@ -1,46 +1,95 @@
 #include "open.h"
 
 
-HashMap* hashMapConstruct(uint64_t size) {
-	HashMap* htPtr = malloc(sizeof (*htPtr));
+HashMapNode* hashMapNodeConstruct(char* key, void* value) {
+	HashMapNode* hmNode = malloc(sizeof *hmNode);
+	if (hmNode == NULL) {
+		return hmNode;
+	}
 
+	hmNode -> key = key;
+	hmNode -> value = value;
+
+	return hmNode;
+}
+
+void hashMapNodeDeconstruct(HashMapNode* hmNode, void (*fn)(void*)) {
+	if (fn == NULL) {
+		fn = &free;
+	}
+
+	fn(hmNode -> value);
+	free(hmNode -> key);
+
+	free(hmNode);
+}
+
+HashMap* hashMapConstruct(uint32_t capacity) {
+	HashMap* htPtr = malloc(sizeof (*htPtr));
 	if (!htPtr) {
 		return NULL;
 	}
 
-	HashMap ht = *htPtr;
+	if (!capacity) {
+		capacity = DSA_DATA_DEFAULT_SIZE;
+	}
 
-	ht.size = 0;
-	ht.capacity = 10;
-	ht.store = malloc(sizeof (HashMapNode*) * ht.capacity);
+	HashMap hm = *htPtr;
+
+	hm.size = 0;
+	hm.capacity = capacity;
+	hm.vector = vectorConstruct(capacity);
 
 	return htPtr;
 }
 
-void hashMapDeconstruct(HashMap* ht) {
-	for (uint64_t i = 0; i < ht -> capacity; i++) {
+void hashMapDeconstruct(HashMap* hm, void (*fn)(void*)) {
+	if (fn == NULL) {
+		fn = &free;
 	}
 
-	free(ht -> store);
-	free(ht);
+	vectorDeconstruct(hm -> vector, fn);
+	free(hm);
 }
 
-void hashMapSet(HashMap* ht, char* key, void* data) {
+void* hashMapGet(HashMap* hm, char* key) {
 	uint64_t hash = hashSBDM(key);
-	uint64_t index = hash % (ht -> capacity);
-	HashMapNode current = ht -> store[index];
+
+	uint32_t index = hash % (hm -> capacity);
+	HashMapNode* node = vectorGet(hm -> vector, index);
+	Vector* data = current -> data;
+
+	void* val = NULL;
+
+	if (current -> size) {
+		for (uint32_t i = 0; i < current.size; i++) {
+			if (node -> key == key) {
+				val = node -> data;
+			}
+		}
+	}
+
+	return val;
+}
+
+void hashMapSet(HashMap* hm, char* key, void* value) {
+	uint64_t hash = hashSBDM(key);
+
+	uint32_t index = hash % (hm -> capacity);
+	HashMapNode* current = vectorGet(hm -> vector, index);
+	Vector* data = current -> data;
 
 	/* performace degradation due to high load
 	 * increase capacity and rehash
 	 */
-	if ((double)ht -> size / ht -> capacity >= 0.65) {
-		hashMapResize(ht);
-		hashMapRehash(ht);
+	if ((double)hm -> size / hm -> capacity >= 0.65) {
+		hashMapResize(hm);
+		hashMapRehash(hm);
 	}
 
 	if (current.size) {
 		bool set = false;
-		for (uint64_t i = 0; i < current.size; i++) {
+		for (uint32_t i = 0; i < current.size; i++) {
 			HashMapNode* node = vectorGet(current, i);
 			if (node -> key == key) {
 				node -> data = data;
@@ -50,7 +99,7 @@ void hashMapSet(HashMap* ht, char* key, void* data) {
 		}
 
 		if (!set) {
-			HashMapNode* node = hashMapNodeConstruct(key, data);
+			HashMapNode* node = hashMapNodeConstruct(key, value);
 			vectorPush(current, node)
 		}
 	} else {
@@ -59,30 +108,12 @@ void hashMapSet(HashMap* ht, char* key, void* data) {
 	}
 }
 
-void* hashMapGet(char* key) {
-	uint64_t hash = hashSBDM(key);
-	uint64_t index = hash % (ht -> capacity);
-	Vector current = ht -> store[index];
-	void* data = NULL;
-
-	if (current -> size) {
-		for (uint64_t i = 0; i < current.size; i++) {
-			HashMapNode* node = vectorGet(current, i);
-			if (node -> key == key) {
-				data = node -> data;
-			}
-		}
-	}
-
-	return data;
+void hashMapRehash(HashMap* hm) {
 }
 
-static void hashMapRehash(HashMap* ht) {
-}
-
-void hashMapResize(HashMap* ht, enum Resize action, uint32_t factor) {
+void hashMapResize(HashMap* hm, enum Resize action, uint32_t factor) {
 	uint64_t proposedSize;
-	uint64_t currentSize = ht -> size;
+	uint64_t currentSize = hm -> size;
 
 	switch (action) {
 		case ADD:
@@ -106,18 +137,6 @@ void hashMapResize(HashMap* ht, enum Resize action, uint32_t factor) {
 			break;
 	}
 
-	ht -> capacity = proposedSize;
-	vectorResize(ht -> store, MULTIPLY, factor);
-}
-
-HashMapNode* hashMapNodeConstruct(char* key, void* data) {
-	HashMapNode* hmNode = malloc(sizeof *hmNode);
-	hmNode -> key = key;
-	hmNode -> data = data;
-
-	return hmNode;
-}
-
-void hashMapNodeDeconstruct(HashMapNode* hmNode) {
-	free(hmNode);
+	hm -> capacity = proposedSize;
+	vectorResize(hm -> vector, action, factor);
 }

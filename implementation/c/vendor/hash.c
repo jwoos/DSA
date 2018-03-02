@@ -5,7 +5,7 @@
  * http://www.cse.yorku.ca/~oz/hash.html
  * djb2
  */
-uint64_t hashJDB2(unsigned char* str) {
+uint64_t hashJDB2(char* str) {
 	uint64_t val = 5381;
 	int c;
 
@@ -17,7 +17,7 @@ uint64_t hashJDB2(unsigned char* str) {
 	return val;
 }
 
-uint64_t hashSBDM(unsigned char* str) {
+uint64_t hashSBDM(char* str) {
 	uint64_t val = 0;
 	int c;
 

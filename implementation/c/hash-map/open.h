@@ -2,6 +2,7 @@
 #define DSA_OPEN_HASH_MAP_H
 
 
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "../vendor/hash.h"
@@ -14,30 +15,33 @@
 typedef struct HashMapNode {
 	uint64_t hash;
 	char* key;
-	void* data;
+	void* value;
 } HashMapNode;
 
 
 typedef struct HashMap {
 	uint32_t size;
 	uint32_t capacity;
-	HashMapNode* store;
+	// vector of linked list
+	Vector* vector;
 } HashMap;
 
 
-HashMap* hashMapConstruct(uint64_t);
+HashMapNode* hashMapNodeConstruct(char*, void*);
 
-void hashMapDeconstruct(HashMap*);
+void hashMapNodeDeconstruct(HashMapNode*, void (*fn)(void*));
 
-void hashMapSet(HashMap*, char*, void*);
+HashMap* hashMapConstruct(uint32_t);
+
+void hashMapDeconstruct(HashMap*, void (*fn)(void*));
 
 void* hashMapGet(HashMap*, char*);
 
-void hashMapResize(HashMap*, enum Resize, uint64_t);
+void hashMapSet(HashMap*, char*, void*);
 
-HashMapNode* hashMapNodeConstruct(char*, void*);
+void hashMapRehash(HashMap*);
 
-void hashMapNodeDeconstruct(HashMapNode*);
+void hashMapResize(HashMap*, enum Resize, uint32_t);
 
 
 #endif
