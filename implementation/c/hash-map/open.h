@@ -6,9 +6,9 @@
 
 #include "../vendor/hash.h"
 
-#include "common.h"
+#include "../common.h"
 #include "../linked-list/double.h"
-#include "vector.h"
+#include "../vector.h"
 
 
 typedef struct HashTableNode {
