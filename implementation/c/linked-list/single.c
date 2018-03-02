@@ -17,6 +17,10 @@ SingleListNode* listNodeConstruct(void* data, SingleListNode* next) {
 }
 
 void listNodeDeconstruct(SingleListNode* node, void (*fn)(void*)) {
+	if (node == NULL) {
+		return;
+	}
+
 	if (fn != NULL) {
 		fn(node -> data);
 	}
@@ -44,6 +48,10 @@ SingleList* listConstruct(SingleListNode* node) {
 }
 
 void listDeconstruct(SingleList* list, void (*fn)(void)) {
+	if (list == NULL) {
+		return;
+	}
+
 	SingleListNode* current = list -> head;
 	while (current != NULL) {
 		SingleListNode* next = current -> next;

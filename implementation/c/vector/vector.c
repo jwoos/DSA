@@ -16,6 +16,10 @@ Vector* vectorConstruct(uint64_t cap) {
 }
 
 void vectorDeconstruct(Vector* vector, void (*fn)(void*)) {
+	if (vector == NULL) {
+		return;
+	}
+
 	for (uint64_t i = 0; i < vector -> capacity; i++) {
 		if (vector -> array[i] != NULL) {
 			if (fn != NULL) {

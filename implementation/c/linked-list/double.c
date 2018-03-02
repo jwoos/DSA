@@ -20,6 +20,10 @@ DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleLi
 }
 
 void listNodeDeconstruct(DoubleListNode* node, void (*fn)(void*)) {
+	if (node == NULL) {
+		return;
+	}
+
 	if (fn != NULL) {
 		fn(node -> data);
 	}
@@ -44,6 +48,10 @@ DoubleList* listConstruct(DoubleListNode* node) {
 }
 
 void listDeconstruct(DoubleList* list, void (*fn)(void*)) {
+	if (list == NULL) {
+		return;
+	}
+
 	DoubleListNode* current = list -> head;
 	while (current != NULL) {
 		DoubleListNode* next = current -> next;
