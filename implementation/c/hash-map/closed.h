@@ -1,5 +1,5 @@
-#ifndef CLOSED_HASH_MAP_H
-#define CLOSED_HASH_MAP_H
+#ifndef DSA_CLOSED_HASH_MAP_H
+#define DSA_CLOSED_HASH_MAP_H
 
 
 /* Closed hashing hash map
@@ -15,6 +15,7 @@ typedef struct HashMap {
 	unsigned int currentSize;
 	unsigned int maxSize;
 } HashMap;
+
 
 typedef struct HashMapNode {
 	char* key;

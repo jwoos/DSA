@@ -1,5 +1,5 @@
-#ifndef OPEN_HASH_MAP_H
-#define OPEN_HASH_MAP_H
+#ifndef DSA_OPEN_HASH_MAP_H
+#define DSA_OPEN_HASH_MAP_H
 
 
 #include <stdlib.h>
@@ -11,33 +11,33 @@
 #include "../vector.h"
 
 
-typedef struct HashTableNode {
+typedef struct HashMapNode {
 	uint64_t hash;
 	char* key;
 	void* data;
-} HashTableNode;
+} HashMapNode;
 
 
-typedef struct HashTable {
+typedef struct HashMap {
 	uint32_t size;
 	uint32_t capacity;
-	HashTableNode* store;
-} HashTable;
+	HashMapNode* store;
+} HashMap;
 
 
-HashTable* hashTableConstruct(uint64_t);
+HashMap* hashMapConstruct(uint64_t);
 
-void hashTableDeconstruct(HashTable*);
+void hashMapDeconstruct(HashMap*);
 
-void hashTableSet(HashTable*, char*, void*);
+void hashMapSet(HashMap*, char*, void*);
 
-void* hashTableGet(HashTable*, char*);
+void* hashMapGet(HashMap*, char*);
 
-void hashTableResize(HashTable*, enum Resize, uint64_t);
+void hashMapResize(HashMap*, enum Resize, uint64_t);
 
-HashTableNode* hashTableNodeConstruct(char*, void*);
+HashMapNode* hashMapNodeConstruct(char*, void*);
 
-void hashTableNodeDeconstruct(HashTableNode*);
+void hashMapNodeDeconstruct(HashMapNode*);
 
 
 #endif

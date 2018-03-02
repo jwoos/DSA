@@ -6,18 +6,20 @@ LDFLAGS =
 # implicit rule for %.o
 # $(CC) $(CPPFLAGS) $(CFLAGS) -c $@
 
+
+OBJECT = utils.o
+
 UNUSED_ALGORITHMS =
 ALGORITHMS =
 
 UNUSED_STRUCTURES = graph.o tree/binary-search.o
-STRUCTURES = utils.o \
-			 linked-list/double.o linked-list/single.o \
+STRUCTURES = linked-list/double.o linked-list/single.o \
 			 vector.o \
 			 hash-map/closed.o hash-map/open.o
 
 default: clean datastructures
 
-datastructures: ${OBJECTS}
+datastructures: ${OBJECTS} ${STRUCTURES}
 	$(CC) datastructures.c $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 debug: default

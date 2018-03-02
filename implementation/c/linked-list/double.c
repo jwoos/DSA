@@ -17,7 +17,7 @@ DoubleList* listConstruct(DoubleListNode* node) {
 	return list;
 }
 
-void listDeconstruct(DoubleList* list, void (*fn)(DoubleListNode*)) {
+void listDeconstruct(DoubleList* list, void (*fn)(void*)) {
 	if (fn == NULL) {
 		fn = &free;
 	}
@@ -52,7 +52,7 @@ DoubleListNode* listNodeConstruct(void* data, DoubleListNode* previous, DoubleLi
 	return node;
 }
 
-void listNodeDeconstruct(DoubleListNode* node, void (*fn)(DoubleListNode*)) {
+void listNodeDeconstruct(DoubleListNode* node, void (*fn)(void*)) {
 	if (fn == NULL) {
 		fn = &free;
 	}

@@ -1,23 +1,23 @@
-#include "hash-table.h"
+#include "open.h"
 
 
-HashTable* hashTableConstruct(uint64_t size) {
-	HashTable* htPtr = malloc(sizeof (*htPtr));
+HashMap* hashMapConstruct(uint64_t size) {
+	HashMap* htPtr = malloc(sizeof (*htPtr));
 
 	if (!htPtr) {
 		return NULL;
 	}
 
-	HashTable ht = *htPtr;
+	HashMap ht = *htPtr;
 
 	ht.size = 0;
 	ht.capacity = 10;
-	ht.store = malloc(sizeof (HashTableNode*) * ht.capacity);
+	ht.store = malloc(sizeof (HashMapNode*) * ht.capacity);
 
 	return htPtr;
 }
 
-void hashTableDeconstruct(HashTable* ht) {
+void hashMapDeconstruct(HashMap* ht) {
 	for (uint64_t i = 0; i < ht -> capacity; i++) {
 	}
 
@@ -25,23 +25,23 @@ void hashTableDeconstruct(HashTable* ht) {
 	free(ht);
 }
 
-void hashTableSet(HashTable* ht, char* key, void* data) {
+void hashMapSet(HashMap* ht, char* key, void* data) {
 	uint64_t hash = hashSBDM(key);
 	uint64_t index = hash % (ht -> capacity);
-	HashTableNode current = ht -> store[index];
+	HashMapNode current = ht -> store[index];
 
 	/* performace degradation due to high load
 	 * increase capacity and rehash
 	 */
 	if ((double)ht -> size / ht -> capacity >= 0.65) {
-		hashTableResize(ht);
-		hashTableRehash(ht);
+		hashMapResize(ht);
+		hashMapRehash(ht);
 	}
 
 	if (current.size) {
 		bool set = false;
 		for (uint64_t i = 0; i < current.size; i++) {
-			HashTableNode* node = vectorGet(current, i);
+			HashMapNode* node = vectorGet(current, i);
 			if (node -> key == key) {
 				node -> data = data;
 				set = true;
@@ -50,16 +50,16 @@ void hashTableSet(HashTable* ht, char* key, void* data) {
 		}
 
 		if (!set) {
-			HashTableNode* node = hashTableNodeConstruct(key, data);
+			HashMapNode* node = hashMapNodeConstruct(key, data);
 			vectorPush(current, node)
 		}
 	} else {
-		HashTableNode* node = hashTableNodeConstruct(key, data);
+		HashMapNode* node = hashMapNodeConstruct(key, data);
 		vectorPush(current, node);
 	}
 }
 
-void* hashTableGet(char* key) {
+void* hashMapGet(char* key) {
 	uint64_t hash = hashSBDM(key);
 	uint64_t index = hash % (ht -> capacity);
 	Vector current = ht -> store[index];
@@ -67,7 +67,7 @@ void* hashTableGet(char* key) {
 
 	if (current -> size) {
 		for (uint64_t i = 0; i < current.size; i++) {
-			HashTableNode* node = vectorGet(current, i);
+			HashMapNode* node = vectorGet(current, i);
 			if (node -> key == key) {
 				data = node -> data;
 			}
@@ -77,10 +77,10 @@ void* hashTableGet(char* key) {
 	return data;
 }
 
-static void hashTableRehash(HashTable* ht) {
+static void hashMapRehash(HashMap* ht) {
 }
 
-void hashTableResize(HashTable* ht, enum Resize action, uint32_t factor) {
+void hashMapResize(HashMap* ht, enum Resize action, uint32_t factor) {
 	uint64_t proposedSize;
 	uint64_t currentSize = ht -> size;
 
@@ -110,14 +110,14 @@ void hashTableResize(HashTable* ht, enum Resize action, uint32_t factor) {
 	vectorResize(ht -> store, MULTIPLY, factor);
 }
 
-HashTableNode* hashTableNodeConstruct(char* key, void* data) {
-	HashTableNode* hmNode = malloc(sizeof *hmNode);
+HashMapNode* hashMapNodeConstruct(char* key, void* data) {
+	HashMapNode* hmNode = malloc(sizeof *hmNode);
 	hmNode -> key = key;
 	hmNode -> data = data;
 
 	return hmNode;
 }
 
-void hashTableNodeDeconstruct(HashTableNode* hmNode) {
+void hashMapNodeDeconstruct(HashMapNode* hmNode) {
 	free(hmNode);
 }

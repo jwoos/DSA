@@ -54,17 +54,6 @@ void listNodeDeconstruct(SingleListNode* node) {
 	free(node);
 }
 
-void listPrint(SingleList* list) {
-	SingleListNode* current = list -> head;
-
-	while (current != NULL) {
-		printf("%d -> ", current -> data);
-		current = current -> next;
-	}
-
-	printf("\n");
-}
-
 void listPush(SingleList* list, int data) {
 	SingleListNode* tail = list -> tail;
 

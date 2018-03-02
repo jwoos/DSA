@@ -5,7 +5,7 @@ Vector* vectorConstruct(uint64_t cap) {
 	Vector* vector = malloc(sizeof(Vector));
 
 	if (!cap) {
-		cap = SNAKE_DATA_DEFAULT_SIZE;
+		cap = DSA_DATA_DEFAULT_SIZE;
 	}
 
 	vector -> size = 0;
@@ -33,7 +33,7 @@ void vectorDeconstruct(Vector* vector, void (*fn)(void*)) {
 
 void vectorPush(Vector* vector, void* data) {
 	if (vector -> size == vector -> capacity) {
-		vectorResize(vector, MULTIPLY, SNAKE_DATA_INCREASE_FACTOR);
+		vectorResize(vector, MULTIPLY, DSA_DATA_INCREASE_FACTOR);
 	}
 
 	vector -> array[vector -> size] = data;
@@ -59,7 +59,7 @@ void vectorSet(Vector* vector, uint64_t index, void* data) {
 
 void vectorInsert(Vector* vector, uint64_t index, void* data) {
 	if (vector -> size == vector -> capacity) {
-		vectorResize(vector, MULTIPLY, SNAKE_DATA_INCREASE_FACTOR);
+		vectorResize(vector, MULTIPLY, DSA_DATA_INCREASE_FACTOR);
 	}
 
 	vector -> size++;

@@ -1,11 +1,11 @@
-#ifndef DOUBLE_LINKED_LIST_H
-#define DOUBLE_LINKED_LIST_H
+#ifndef DSA_DOUBLE_LINKED_LIST_H
+#define DSA_DOUBLE_LINKED_LIST_H
 
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 
 typedef struct DoubleList {
@@ -24,11 +24,11 @@ typedef struct DoubleListNode {
 
 DoubleList* listConstruct(DoubleListNode*);
 
-void listDeconstruct(DoubleList*, void (*fn)(DoubleListNode*));
+void listDeconstruct(DoubleList*, void (*fn)(void*));
 
 DoubleListNode* listNodeConstruct(void*, DoubleListNode*, DoubleListNode*);
 
-void listNodeDeconstruct(DoubleListNode*, void (*fn)(DoubleListNode*));
+void listNodeDeconstruct(DoubleListNode*, void (*fn)(void*));
 
 void listPush(DoubleList*, void*);
 

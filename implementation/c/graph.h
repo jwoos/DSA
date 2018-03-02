@@ -1,5 +1,5 @@
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef DSA_GRAPH_H
+#define DSA_GRAPH_H
 
 
 typedef struct AdjacencyListNode {
@@ -7,9 +7,11 @@ typedef struct AdjacencyListNode {
 	struct AdjacencyListNode* to;
 } AdjacencyListNode;
 
+
 typedef struct AdjacencyList {
 	AdjacencyListNode* head;
 } AdjacencyList;
+
 
 typedef struct Graph {
 	union {
@@ -24,6 +26,7 @@ typedef struct Graph {
 	int edgeCount;
 	bool directed;
 } Graph;
+
 
 int** matrixInitialize(int);
 

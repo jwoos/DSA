@@ -1,5 +1,12 @@
-#ifndef SINGLE_LINKED_LIST_H
-#define SINGLE_LINKED_LIST_H
+#ifndef DSA_SINGLE_LINKED_LIST_H
+#define DSA_SINGLE_LINKED_LIST_H
+
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 /*
  * the SingleListNode is the actual list, I opted to wrap it in another struct
@@ -14,12 +21,14 @@ typedef struct SingleListNode {
 	struct SingleListNode* next;
 } SingleListNode;
 
+
 // SingleListNode wrapper
 typedef struct SingleList {
 	SingleListNode* head;
 	SingleListNode* tail;
 	int size;
 } SingleList;
+
 
 SingleList* listConstruct(SingleListNode*);
 
